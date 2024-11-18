@@ -1,5 +1,5 @@
 module UART1(
-    input clk, rst,
+    input clk, clk_uart, rst,
     input [7:0] datain_1,
     input data_reciev_1,
     output reg data_transm_1,
@@ -13,7 +13,7 @@ reg [4:0] counter_transm;
 reg [4:0] state_reciev;
 reg [4:0] counter_reciev;
 
-always @(posedge clk) begin
+always @(posedge clk_uart) begin
     if (rst) begin
         data_transm_1 <= 1;
         dataout_1 <= 0;
@@ -75,7 +75,7 @@ end
 endmodule
 
 module UART2(
-    input clk, rst,
+    input clk, clk_uart, rst,
     input [7:0] datain_2,
     input data_reciev_2,
     output reg data_transm_2,
@@ -89,7 +89,7 @@ reg [4:0] counter_transm;
 reg [4:0] state_reciev;
 reg [4:0] counter_reciev;
 
-always @(posedge clk) begin
+always @(posedge clk_uart) begin
     if (rst) begin
         data_transm_2 <= 1;
         dataout_2 <= 0;
@@ -147,5 +147,20 @@ always @(posedge clk) begin
         endcase
     end
 end
+
+endmodule
+
+module completo(
+    input clk, clk_uart, rst,
+    input [7:0] datain_1,
+    input [7:0] datain_2,
+    output [7:0] dataout_1,
+    output [7:0] dataout_2
+);
+
+wire data_transm_1, data_transm_2;
+
+UART1 tyr1(.clk(clk), .clk_uart(clk_uart), .rst(rst), .datain_1(datain_1), .data_reciev_1(data_transm_2), .data_transm_1(data_transm_1), .dataout_1(dataout_1));
+UART2 tyr2(.clk(clk), .clk_uart(clk_uart), .rst(rst), .datain_2(datain_2), .data_reciev_2(data_transm_1), .data_transm_2(data_transm_2), .dataout_2(dataout_2));
 
 endmodule
